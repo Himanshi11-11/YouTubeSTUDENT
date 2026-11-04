@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YouTube Student – prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--fg:#0f0f0f;--mut:#606060;--card:#f2f2f2;--acc:#ff0000;--line:#e5e5e5;--hd:system-ui,sans-serif}
+body.student{--bg:#16342e;--fg:#f1ece0;--mut:#a9bfb4;--card:#1f443c;--acc:#9fd3b4;--line:#2f5a50;--hd:'Fraunces',Georgia,serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}
+button{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:8px 14px;background:var(--card);color:var(--fg)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+button.pri{background:var(--acc);color:#fff}
+body.student button.pri{color:#10261f;font-weight:600}
+header{display:flex;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;position:sticky;top:0;background:var(--bg);z-index:5}
+.logo{font-weight:700;font-size:19px;font-family:var(--hd);margin-right:auto}
+.logo i{background:var(--acc);color:#fff;border-radius:6px;padding:1px 7px;font-style:normal;margin-right:4px}
+body.student .logo i{color:#10261f}
+.portal{display:flex;background:var(--card);border-radius:20px;padding:3px}
+.portal button{background:none;border-radius:16px;padding:5px 12px}
+.portal button.on{background:var(--acc);color:#fff}
+body.student .portal button.on{color:#10261f;font-weight:600}
+.search{flex:1;min-width:160px;max-width:420px;display:flex}
+.search input{flex:1;padding:8px 14px;border:1px solid var(--line);border-radius:20px 0 0 20px;background:var(--bg);color:var(--fg)}
+.search button{border-radius:0 20px 20px 0}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+h1,h2,h3{font-family:var(--hd);margin:0 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.thumb{aspect-ratio:16/9;border-radius:12px;display:flex;align-items:flex-end;padding:10px;color:#fff;font-weight:700;font-size:17px;position:relative;cursor:pointer}
+.thumb small{position:absolute;right:8px;bottom:8px;background:#000b;padding:1px 6px;border-radius:4px;font-size:12px;font-weight:400}
+.vid{cursor:pointer}.vid p{margin:6px 0 0;font-weight:600}.vid span{color:var(--mut);font-size:13px}
+.banner{background:var(--card);border-radius:12px;padding:14px 16px;margin-bottom:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.banner b{flex:1;min-width:220px}
+.row{display:flex;gap:14px;padding:14px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;cursor:pointer;align-items:center;background:var(--card)}
+.row .rk{font:700 26px var(--hd);width:34px;color:var(--acc)}
+.row .th{width:120px;aspect-ratio:16/9;border-radius:8px;flex:none}
+.row .in{flex:1}.row .in span{color:var(--mut);font-size:13px;display:block}
+.score{font:700 20px var(--hd);text-align:right}.score span{font:400 12px system-ui;color:var(--mut)}
+.row.hl{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
+.formula{background:#0003;border-radius:8px;padding:10px 12px;font:13px ui-monospace,monospace;margin:10px 0 16px}
+.two{display:grid;grid-template-columns:1.5fr 1fr;gap:20px}
+@media(max-width:800px){.two{grid-template-columns:1fr}.row .th{width:80px}}
+.slide{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;min-height:260px}
+.slide h2{font-size:26px}.slide p{font-size:19px;line-height:1.6;margin:8px 0}
+.slide .f{font:22px ui-monospace,monospace;color:var(--acc);margin:14px 0}
+.dots{display:flex;gap:6px;margin:12px 0}.dots i{flex:1;height:5px;border-radius:3px;background:var(--line)}.dots i.on{background:var(--acc)}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap}
+.meter{background:var(--card);border-radius:14px;padding:16px}
+.bar{height:12px;background:#0003;border-radius:6px;overflow:hidden;margin:4px 0 12px}
+.bar div{height:100%;transition:width .4s}
+.b1{background:#e0574a}.b2{background:var(--acc)}
+.big{font:700 28px var(--hd)}
+.q{background:var(--card);border-radius:12px;padding:14px;margin-bottom:12px}
+.q label{display:block;padding:6px 8px;border-radius:6px;cursor:pointer}
+.q label:hover{background:#0002}
+.stars button{font-size:24px;padding:4px 10px;background:none;color:var(--mut)}.stars button.on{color:#f5b301}
+.watch{aspect-ratio:16/9;background:#000;border-radius:12px;display:grid;place-items:center;color:#fff;text-align:center;padding:20px}
+.toast{background:var(--acc);color:#10261f;padding:10px 14px;border-radius:10px;margin:12px 0;font-weight:600}
+.note{color:var(--mut);font-size:13px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.chip{border-radius:20px;padding:6px 14px;border:1px solid var(--line)}
+.chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+body.student .chip.on{color:#10261f;font-weight:600}
+.badge{display:inline-block;font-size:12px;font-style:normal;border:1px solid var(--acc);color:var(--acc);border-radius:10px;padding:0 8px;margin-right:6px}
+.badge.ok{background:var(--acc);color:#10261f}
+.user{display:flex;gap:8px;align-items:center;font-size:13px}
+.login{max-width:420px;margin:30px auto;background:var(--card);border-radius:14px;padding:22px}
+.login label{display:block;font-size:13px;color:var(--mut)}
+.login input{width:100%;padding:10px;margin:6px 0 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit}
+.dim{opacity:.45}
+.meter ul{margin:6px 0 12px;padding-left:20px}.meter li{margin-bottom:4px}
+.err{color:#ff8a80;font-size:13px;min-height:18px;margin-bottom:8px}
+select{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+.thumb,.th,.watch{background-size:cover}
+.sw{position:relative;display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--mut)}.sw input{position:absolute;opacity:0}.sw i{width:38px;height:22px;border-radius:12px;background:#0004;border:1px solid var(--line);position:relative;transition:.2s}.sw i::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--fg);transition:.2s}.sw input:checked+i{background:var(--acc)}.sw input:checked+i::after{left:18px;background:#10261f}.sw input:focus-visible+i{outline:2px solid var(--acc);outline-offset:2px}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+body.student{background:radial-gradient(circle at 8% -10%,#2f7a66 0,transparent 45%),radial-gradient(circle at 100% 0,#3b4a8c66 0,transparent 40%),#16342e;background-attachment:fixed}
+body.student header{background:#16342ecc;backdrop-filter:blur(10px)}
+body.student .row,body.student .meter,body.student .q{transition:transform .2s,box-shadow .2s,border-color .2s}
+body.student .row:hover{transform:translateY(-3px);box-shadow:0 8px 22px #0005;border-color:var(--acc)}
+body.student button{transition:transform .15s,background .2s}body.student button:hover{transform:translateY(-1px)}body.student button:active{transform:scale(.95)}
+body.student .slide{background:linear-gradient(135deg,#1f443c,#2a6254);box-shadow:0 10px 30px #0004}.slide>*{animation:pop .35s}
+body.student .toast{animation:pop .3s}
+.hero{font-size:32px;background:linear-gradient(90deg,#9fd3b4,#f5d76e);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tc{border-radius:16px;padding:18px;color:#fff;cursor:pointer;transition:transform .2s,box-shadow .2s;min-height:130px}.tc:hover{transform:translateY(-4px) rotate(-.6deg);box-shadow:0 12px 26px #0006}.tc .e{font-size:44px;display:block;transition:transform .3s}.tc:hover .e{transform:scale(1.25) rotate(8deg)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" id="logo"></div>
+  <form class="search" id="sform"><input id="q" placeholder="Search" aria-label="Search"><button type="submit">Search</button></form>
+  <div class="portal" role="group" aria-label="Switch portal">
+    <button id="pYT">YouTube</button><button id="pST">YouTube Student</button>
+  </div>
+  <div class="user" id="user"></div>
+</header>
+<div id="ob"></div><div id="bk" style="max-width:1100px;margin:8px auto 0;padding:0 16px"></div>
+<main id="app"></main>
+
+<script>
+/* ---------- DATA (hardcoded for demo) ---------- */
+const mk=(n,avg,w)=>({n,sumW:n*w,sumRW:n*w*avg});
+const LV={boards:'Boards (Class 11–12)',jee:'IIT-JEE level',olympiad:'Olympiad level'};
+const STUDENTS={STU1001:{name:'Aarav',cls:'Class 12',goal:'jee'},STU1002:{name:'Diya',cls:'Class 11',goal:'boards'},STU1003:{name:'Kabir',cls:'Class 12',goal:'olympiad'},'vips@himanshi':{name:'Himanshi',cls:'VIPS Student',goal:'boards'},'vips@chayan':{name:'Chayan',cls:'VIPS Student',goal:'boards'}};
+const COLORS=['#c0392b','#2d6a4f','#274c77','#7b2cbf','#b5651d','#00796b'];
+const videos=[
+ {id:1,title:'Bayes Theorem in 10 minutes',teacher:'Ravi Sir',views:2400000,videoMB:95,notesMB:4,topic:'bayes',lvl:'boards',rev:mk(900,3.6,1.2)},
+ {id:2,title:'Bayes Theorem: notes + audio walkthrough',teacher:'Meera Ma\'am',views:18000,videoMB:85,notesMB:3.5,topic:'bayes',lvl:'boards',rev:mk(240,4.8,2.6)},
+ {id:3,title:'Bayes Theorem – full lecture',teacher:'Prof. Anand',views:640000,videoMB:210,notesMB:5,topic:'bayes',lvl:'jee',rev:mk(500,4.1,1.8)},
+ {id:4,title:'Bayes tricks for JEE (fast)',teacher:'Karan Academy',views:1100000,videoMB:70,notesMB:3,topic:'bayes',lvl:'jee',rev:mk(700,3.1,1.0)},
+ {id:5,title:'Bayes Theorem, step by step',teacher:'Sana Verma',views:9000,videoMB:60,notesMB:3,topic:'bayes',lvl:'boards',rev:mk(120,4.5,2.2)},
+ {id:6,title:'Bayes in olympiad problems',teacher:'Dr. Iyer',views:4000,videoMB:75,notesMB:3.5,topic:'bayes',lvl:'olympiad',rev:mk(60,4.7,2.4)},
+ {id:7,title:'Conditional probability traps',teacher:'Nikhil Rao',views:7000,videoMB:90,notesMB:4,topic:'bayes',lvl:'olympiad',rev:mk(80,4.2,2.0)}
+];
+[
+['newton',"Newton's laws in 12 minutes",'Ravi Sir',3100000,110,4,'boards',1200,3.5,1.1],
+['newton',"Newton's laws: notes + audio",'Meera Ma\'am',22000,80,3.5,'boards',260,4.7,2.5],
+['newton','Free body diagrams for JEE','Prof. Anand',520000,190,5,'jee',420,4.2,1.9],
+['newton','Pulley and friction tricks','Karan Academy',900000,65,3,'jee',650,3.0,1.0],
+['newton','Non-inertial frames explained','Dr. Iyer',5000,80,3.5,'olympiad',55,4.6,2.3],
+['photo','Photosynthesis full chapter','Ravi Sir',2700000,120,4,'boards',1000,3.4,1.2],
+['photo','Photosynthesis: notes + audio','Sana Verma',14000,60,3,'boards',180,4.8,2.4],
+['photo','Calvin cycle and C4 for NEET/JEE','Prof. Anand',480000,150,4.5,'jee',350,4.1,1.8],
+['photo','Z-scheme and photorespiration','Dr. Iyer',3500,75,3.5,'olympiad',48,4.6,2.2],
+['deriv','Derivatives from scratch','Karan Academy',1900000,100,4,'boards',800,3.3,1.0],
+['deriv','Derivatives: notes + audio','Meera Ma\'am',16000,70,3,'boards',210,4.7,2.5],
+['deriv','Maxima and minima for JEE','Prof. Anand',610000,180,5,'jee',390,4.2,1.9],
+['deriv','Mean value theorem and inequalities','Nikhil Rao',4500,85,4,'olympiad',52,4.5,2.1]
+].forEach(a=>videos.push({id:videos.length+1,topic:a[0],title:a[1],teacher:a[2],views:a[3],videoMB:a[4],notesMB:a[5],lvl:a[6],rev:mk(a[7],a[8],a[9])}));
+const SL_bayes=[
+ {h:'The 11 PM problem',p:'Exam is tomorrow and you are not sure what Bayes theorem is for. Let us fix that in five short slides.'},
+ {h:'What it answers',p:'When you see new evidence, how should you update what you believed before?'},
+ {h:'The formula',p:'The probability of A given B equals the probability of B given A, times the probability of A, divided by the probability of B.',f:'P(A|B) = P(B|A) · P(A) / P(B)'},
+ {h:'Prior and posterior',p:'P(A) is the prior, what you believed before. P(A|B) is the posterior, what you believe after seeing B.'},
+ {h:'Quick example',p:'A test catches a disease 90 percent of the time, but only 1 percent of people have it. A positive result is still not certain. Bayes shows exactly how likely it is.'}
+];
+const QZ_bayes=[
+ {q:'P(A|B) equals…',o:['P(B|A)·P(A) / P(B)','P(A)·P(B)','P(B|A) + P(A)'],a:0},
+ {q:'In P(A|B), the "prior" is…',o:['P(B)','P(A)','P(A|B)'],a:1},
+ {q:'Bayes theorem is used to…',o:['Add two probabilities','Find the mean of data','Update a belief after new evidence'],a:2}
+];
+
+/* ---------- STATE ---------- */
+let mode='yt',view='home',cur=null,slide=0,playing=false,tok=0,prog=0,lastRank=null,result=null,user=null,lvl='all',reviewed=new Set(),afterLogin=null,offline=false;
+let store={items:[],queue:[]};let nl='en',al='en',pl={},vq='720p',dq='360p',aq='Standard',ys='rev',cmts={},tp=null,hist=[],ov=false,hs={};try{const l=localStorage.getItem('ysl');if(l){nl=l.slice(0,2);al=l.slice(2)}cmts=JSON.parse(localStorage.getItem('ysc')||'{}')}catch(e){}try{hs=JSON.parse(localStorage.getItem('ysq')||'{}')}catch(e){}
+try{const t=JSON.parse(localStorage.getItem('ys')||'null');if(t)store.items=t.items||[]}catch(e){}
+const persist=()=>{try{localStorage.setItem('ys',JSON.stringify({items:store.items}))}catch(e){}};
+const $=s=>document.querySelector(s),app=$('#app');
+const score=v=>v.rev.sumRW/v.rev.sumW;
+const fmtV=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?Math.round(n/1e3)+'K':n;
+const ranked=()=>[...videos].sort((a,b)=>score(b)-score(a));
+const col=v=>COLORS[v.id%COLORS.length];
+
+/* ---------- SHELL ---------- */
+function shell(){
+  document.body.classList.toggle('student',mode==='st');
+  $('#logo').innerHTML=mode==='st'?'<i>▶</i>YouTube Student':'<i>▶</i>YouTube';
+  $('#pYT').classList.toggle('on',mode==='yt');$('#pST').classList.toggle('on',mode==='st');userChip();$('#bk').innerHTML=(hist.length&&(view!=='home'||ov))?'<button onclick="goBack()">← Back</button>':'';
+  $('#ob').innerHTML=(mode==='st'&&offline)?'<div class="banner" style="margin:0;border-radius:0"><b>Offline mode. Saved lessons, summaries and quizzes still work. Reviews sync when you reconnect.</b></div>':'';
+}
+function userChip(){
+  const n=store.items.length;
+  $('#user').innerHTML=`<button onclick="go(mode,'downloads')">Downloads${n?' ('+n+')':''}</button>`+(mode==='st'?`<label class="sw"><input type="checkbox" ${offline?'checked':''} onchange="setOffline(this.checked)"><i></i>Offline</label>`+(user?`<span class="badge ok">Verified</span><button onclick="go('st','profile')">${user.name} · ${user.cls}</button><button onclick="logout()">Log out</button>`:`<button onclick="askLogin()">Student login</button>`):'');
+}
+function go(m,v,vid,nb){stop();if(!nb)hist.push({m:mode,v:view,id:cur&&cur.id,t:tp});ov=false;if(m==='yt')offline=false;mode=m;view=v;if(vid){cur=videos.find(x=>x.id===vid);tp=cur.topic;useTopic()}shell();render();scrollTo(0,0)}
+function goBack(){const h=hist.pop();if(!h)return go(mode,'home',0,1);tp=h.t;go(h.m,h.v,h.id,1)}
+function openTopic(k){tp=k;lvl=user?user.goal:'all';go('st','list')}
+$('#pYT').onclick=()=>go('yt','home');
+$('#pST').onclick=()=>go('st','home');
+$('#sform').onsubmit=e=>{e.preventDefault();$('#q').dataset.s=$('#q').value;go(mode,'home')};
+$('#logo').onclick=()=>go(mode,'home');
+
+/* ---------- YOUTUBE CLONE ---------- */
+function ytHome(){
+  const q=($('#q').value||'').toLowerCase();
+  const list=videos.filter(v=>(v.title+v.teacher).toLowerCase().includes(q)).sort((a,b)=>ys==='rev'?score(b)-score(a):b.views-a.views);
+  app.innerHTML=`<div class="banner"><b>Short on data tonight? Try notes + audio with reviews from students who passed the quiz.</b><button class="pri" onclick="go('st','home')">Open YouTube Student</button></div>
+  <div class="chips"><button class="chip ${ys==='rev'?'on':''}" onclick="ys='rev';ytHome()">⭐ Best student reviews</button><button class="chip ${ys==='views'?'on':''}" onclick="ys='views';ytHome()">🔥 Most viewed</button></div>
+  <div class="grid">${list.map(v=>`<div class="vid" onclick="go('yt','watch',${v.id})"><div class="thumb" style="${bg(v)}">${v.title}<small>${v.videoMB>100?'38:12':'10:24'}</small></div><p>${v.title}</p><span>${v.teacher} · ${fmtV(v.views)} views · ★ ${score(v).toFixed(1)} (${v.rev.n})</span></div>`).join('')||'<p>No results.</p>'}</div>
+  <p class="note">${ys==='rev'?'Sorted by weighted student reviews, so a clear lesson with fewer views can rank first.':'Sorted by views only. Most-watched is on top, whether or not it helped.'}</p>`;
+}
+function ytWatch(){
+  const nx=videos.filter(v=>v.id!==cur.id).sort((a,b)=>(b.topic===cur.topic)-(a.topic===cur.topic)||score(b)-score(a)).slice(0,4);
+  app.innerHTML=`<div class="two"><div><div class="watch" style="${bg(cur)}"><div><h2>▶ ${cur.title}</h2><p>Playing at <b>${vq}</b>. Streaming uses about <b>${vmb(cur,vq)} MB</b> of mobile data.</p></div></div>
+  <div class="ctrl" style="margin-top:10px"><label class="note">Video quality ${sel('vq',Object.keys(F),vq)}</label></div>
+  <h2 style="margin-top:12px">${cur.title}</h2><span class="note">${cur.teacher} · ${fmtV(cur.views)} views · ★ ${score(cur).toFixed(1)} from ${cur.rev.n} students</span>
+  <div class="ctrl" style="margin:12px 0;align-items:center"><label class="note">Download quality ${sel('dq',Object.keys(F),dq)}</label><button onclick="download(${cur.id},'video')">⬇ Video · ${vmb(cur,dq)} MB</button><label class="note">Audio ${sel('aq',Object.keys(AF),aq)}</label><button onclick="download(${cur.id},'audio')">⬇ Audio · ${amb(cur,aq)} MB</button></div><div id="dlstat"></div>
+  <div class="banner" style="margin-top:14px"><b>Even audio only is ${amb(cur,aq)} MB. Notes + audio is ${cur.notesMB} MB, with an AI summary and an offline quiz.</b><button class="pri" onclick="tp='${cur.topic}';lvl=user?user.goal:'all';go('st','list')">Switch to YouTube Student</button></div></div>
+  <div><h3>Recommended by student reviews</h3>${nx.map(v=>`<div class="vid" style="margin-bottom:12px" onclick="go('yt','watch',${v.id})"><div class="thumb" style="${bg(v)};aspect-ratio:21/9">${v.title}</div><span>${v.teacher} · ★ ${score(v).toFixed(1)} · ${fmtV(v.views)} views</span></div>`).join('')}</div></div>`;
+}
+
+/* ---------- STUDENT: HOME + RANKED LIST ---------- */
+function stHome(){
+  const q=($('#q').value||'').toLowerCase(),ks=Object.keys(T).filter(k=>!q||(T[k].name+T[k].sub+videos.filter(v=>v.topic===k).map(v=>v.title+v.teacher).join()).toLowerCase().includes(q));
+  app.innerHTML=`<h1 class="hero">What are you studying tonight?</h1><p class="note">Pick a topic. Results are ranked by how much students learned, not by views. Then choose how deep you need to go: Boards, IIT-JEE or Olympiad.</p>
+  <div class="grid" style="margin-top:14px">${ks.map(k=>`<div class="tc" style="background:linear-gradient(135deg,${GR[k][0]},${GR[k][1]})" onclick="openTopic('${k}')"><span class="e">${T[k].ic}</span><b style="font-size:19px">${T[k].name}</b><div style="opacity:.85;font-size:13px">${T[k].sub} · ${videos.filter(v=>v.topic===k).length} lessons</div>${hs[k]!=null?`<em class="badge ok" style="margin-top:8px">Best quiz ${hs[k]}/3</em>`:''}</div>`).join('')||'<p>No topic found. Try Bayes, Newton, photosynthesis or derivatives.</p>'}</div>
+  <h3 style="margin-top:26px">🏆 Top rated by students</h3>${ranked().slice(0,3).map(v=>`<div class="row" onclick="openLesson(${v.id})"><div class="th" style="${bg(v)}"></div><div class="in"><b>${v.title}</b><span>${T[v.topic].name} · ${v.teacher} · ${LV[v.lvl]}</span></div><div class="score">★ ${score(v).toFixed(2)}<br><span>${v.rev.n} reviews</span></div></div>`).join('')}`;
+}
+function rowsHTML(hlId,prevRank){
+  return rankedL().map((v,i)=>`<div class="row ${v.id===hlId?'hl':''} ${offline&&!hasItem(v.id,'pack')?'dim':''}" onclick="openLesson(${v.id})">
+   <div class="rk">${i+1}</div><div class="th" style="${bg(v)}"></div>
+   <div class="in"><b>${v.title}</b><span>${i===0?'<em class="badge ok">🏆 Top pick</em>':''}<em class="badge">${LV[v.lvl]}</em>${hasItem(v.id,'pack')?'<em class="badge ok">Saved offline</em>':''}${user&&user.goal===v.lvl?'<em class="badge ok">Recommended for you</em>':''}${v.teacher} · ${fmtV(v.views)} views · ${v.rev.n} verified reviews</span>
+   <span>Notes + audio: ${v.notesMB} MB (video ${v.videoMB} MB)${v.id===hlId&&prevRank!=null?` · moved from #${prevRank} to #${i+1}`:''}</span></div>
+   <div class="score">${score(v).toFixed(2)}<br><span>learning score</span></div></div>`).join('');
+}
+const rankedL=()=>ranked().filter(v=>v.topic===tp&&(lvl==='all'||v.lvl===lvl));
+function filtersHTML(){
+  const rec=user?user.goal:null;
+  return `<p class="note">How deep do you need to go for this topic? ${rec?'Your recommended level is marked.':'Log in to see the level recommended for you.'}</p><div class="chips">${[['all','All levels'],...Object.entries(LV)].map(([k,t])=>`<button class="chip ${lvl===k?'on':''}" onclick="setLvl('${k}')">${t}${rec===k?' · Recommended':''}</button>`).join('')}</div>`;
+}
+function setLvl(k){lvl=k;stList()}
+function askLogin(cb){afterLogin=cb||null;stop();hist.push({m:mode,v:view,id:cur&&cur.id,t:tp});ov=true;shell();
+  app.innerHTML=`<div class="login"><h2>Student login</h2><p class="note">Only verified students can review lessons. This keeps reviews honest.</p>
+  <label>Student ID<input id="sid" placeholder="e.g. STU1001" autocomplete="off"></label>
+  <div class="err" id="err"></div><button class="pri" onclick="doLogin()">Verify and log in</button>
+  <p class="note">Demo IDs: vips@himanshi, vips@chayan, STU1001 (Class 12, JEE), STU1002 (Class 11, Boards), STU1003 (Class 12, Olympiad). Class and goal come from the school record.</p></div>`;
+}
+function doLogin(){
+  const raw=$('#sid').value.trim().toLowerCase(),id=Object.keys(STUDENTS).find(k=>k.toLowerCase()===raw),s=STUDENTS[id];
+  if(!s){$('#err').textContent='This ID is not in the school records. Check it and try again.';return}
+  user={id,...s};lvl=s.goal;shell();
+  const cb=afterLogin;afterLogin=null;const h=hist.pop();ov=false;if(h)tp=h.t;cb?cb():go('st',h?h.v:'home',h&&h.id,1);
+}
+function logout(){user=null;lvl='all';go('st','home')}
+function stList(){
+  app.innerHTML=`<h1>${T[tp].name}</h1><div class="formula">learning score = Σ(rating × weight) / Σ(weight)<br>weight = 0.5 + quiz answers correct (0–3). Only verified student IDs can review. Views are not used.</div>${filtersHTML()}${rowsHTML(result&&result.id,result&&result.prev)}`;
+  if(result){const r=result;result=null;}
+}
+
+/* ---------- STUDENT: LEARN (notes + audio) ---------- */
+function stLearn(){
+  app.innerHTML=`<h2>${cur.title}</h2><span class="note">${cur.teacher} · ${LV[cur.lvl]} · notes + audio mode</span>
+  <div class="two" style="margin-top:14px"><div>
+    <div class="slide" id="sl"></div><div class="dots" id="dots"></div>
+    <div class="ctrl" id="lg" style="margin-bottom:10px"></div><div class="ctrl"><button onclick="prev()">← Previous slide</button><button class="pri" id="pp" onclick="toggle()">Play audio</button><button onclick="next()">Next</button><button onclick="startQuiz()">Take the quiz</button></div>
+    <div class="ctrl" style="margin-top:10px"><button onclick="download(${cur.id},'pack')">Save for offline</button><button onclick="dlNotes()">Download notes</button><button onclick="aiOpen()">Summarise / I don't get it</button></div><div id="dlstat"></div><div id="ai"></div><div id="cm"></div>
+    <p class="note">Audio is read aloud by your browser's voice for this demo. Hindi audio needs a Hindi voice on your device. In the real product the teacher records it.</p></div>
+  <div class="meter"><h3>Data used</h3>
+    <div>Video would use</div><div class="bar"><div class="b1" id="b1" style="width:0"></div></div><div class="big" id="n1">0 MB</div>
+    <div style="margin-top:10px">Notes + audio uses</div><div class="bar"><div class="b2" id="b2" style="width:0"></div></div><div class="big" id="n2">0 MB</div>
+    <p id="sv" class="note"></p></div></div>`;
+  paint();cmPaint();
+}
+function paint(){
+  const s=sl(nl)[slide];
+  const LG=(k,c)=>[['en','English'],['hi','हिन्दी']].map(([v,t])=>`<button class="chip ${c===v?'on':''}" onclick="setLg('${k}','${v}')">${t}</button>`).join('');
+  $('#lg').innerHTML=`<span class="note">Notes:</span>${LG('n',nl)}<span class="note">Audio:</span>${LG('a',al)}`;
+  $('#sl').innerHTML=`<h2>${s.h}</h2><p>${s.p}</p>${s.f?`<div class="f">${s.f}</div>`:''}`;
+  $('#dots').innerHTML=slides.map((_,i)=>`<i class="${i<=slide?'on':''}"></i>`).join('');
+  prog=(slide+(playing?0.5:0))/slides.length;
+  const a=cur.videoMB*prog,b=cur.notesMB*prog;
+  $('#b1').style.width='100%';$('#b2').style.width=(cur.notesMB/cur.videoMB*100)+'%';
+  $('#n1').textContent=a.toFixed(1)+' MB';$('#n2').textContent=b.toFixed(1)+' MB';
+  $('#sv').textContent=prog>0?`About ${Math.round((1-cur.notesMB/cur.videoMB)*100)}% less data.`:'';
+  $('#pp').textContent=playing?'Pause audio':'Play audio';
+}
+function speak(){
+  const my=++tok;
+  const done=()=>{if(my!==tok||!playing)return;if(slide<slides.length-1){slide++;paint();speak()}else{playing=false;paint()}};
+  const s=sl(al)[slide];
+  if('speechSynthesis' in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(s.h+'. '+s.p);u.lang=al==='hi'?'hi-IN':'en-IN';u.onend=done;u.onerror=()=>{};speechSynthesis.speak(u)}
+  else setTimeout(done,6000);
+}
+function toggle(){playing=!playing;paint();if(playing)speak();else stop(true)}
+function stop(keep){tok++;if(pl.iv){clearInterval(pl.iv);pl.run=false}if('speechSynthesis' in window)speechSynthesis.cancel();if(!keep)playing=false}
+function next(){if(slide<slides.length-1){slide++;paint();if(playing)speak()}}
+function prev(){if(slide>0){slide--;paint();if(playing)speak()}}
+
+/* ---------- STUDENT: QUIZ + REVIEW ---------- */
+function startQuiz(){
+  stop();hist.push({m:mode,v:view,id:cur&&cur.id,t:tp});ov=true;shell();
+  app.innerHTML=`<h2>Quick check</h2><p class="note">Three questions. Your score decides how much your review counts. This quiz works offline.${offline?' Your review will sync when you reconnect.':''}</p>
+  ${quiz.map((x,i)=>`<div class="q"><b>${i+1}. ${x.q}</b>${x.o.map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${o}</label>`).join('')}</div>`).join('')}
+  <button class="pri" onclick="submitQuiz()">Check answers</button>`;
+}
+let stars=0,correct=0;
+let lm='';
+function submitQuiz(){
+  correct=quiz.reduce((n,x,i)=>{const c=document.querySelector('input[name=q'+i+']:checked');return n+(c&&+c.value===x.a?1:0)},0);
+  stars=0;
+  lm=quiz.map((x,i)=>{const c=document.querySelector('input[name=q'+i+']:checked');return c&&+c.value===x.a?'':'<li>'+x.q+' → <b>'+x.o[x.a]+'</b></li>'}).join('');
+  hs[cur.topic]=Math.max(hs[cur.topic]||0,correct);try{localStorage.setItem('ysq',JSON.stringify(hs))}catch(e){}
+  revScreen();
+}
+function revScreen(){
+  app.innerHTML=`<h2>You got ${correct} of ${quiz.length}</h2>${lm?'<div class="q"><b>Review these answers</b><ul>'+lm+'</ul></div>':'<div class="toast">Perfect score!</div>'}`+(user?`<p>Now review this lesson. Your review counts <b>${(0.5+correct).toFixed(1)}×</b>.</p><p class="note">Reviewing as ${user.name} (${user.id}).</p><h3>How much did it help you understand?</h3><div class="stars" id="st">${[1,2,3,4,5].map(n=>`<button aria-label="${n} stars" onclick="setStars(${n})">★</button>`).join('')}</div><br><button class="pri" onclick="submitReview()">Submit review</button>`:`<div class="toast">🔒 Log in with your student ID to review this lesson.</div><button class="pri" onclick="askLogin(revScreen)">Student login</button>`);
+}
+function setStars(n){stars=n;document.querySelectorAll('#st button').forEach((b,i)=>b.classList.toggle('on',i<n))}
+function submitReview(){
+  if(!stars){alert('Pick a star rating first.');return}
+  if(!user){const s0=stars,c0=correct;askLogin(()=>{stars=s0;correct=c0;submitReview()});return}
+  const key=user.id+':'+cur.id;
+  if(reviewed.has(key)){app.innerHTML=`<div class="toast">You already reviewed this lesson. One review per student keeps rankings fair.</div><button class="pri" onclick="go('st','list')">Back to results</button>`;return}
+  reviewed.add(key);lvl=cur.lvl;
+  const w=0.5+correct;
+  if(offline){store.queue.push({vid:cur.id,stars,w});app.innerHTML=`<div class="toast">You are offline. Your review is saved on this device and will count when you reconnect.</div><button class="pri" onclick="go('st','list')">Back to results</button>`;return}
+  const r=applyReview(cur.id,stars,w);
+  ov=false;mode='st';view='list';shell();
+  app.innerHTML=`<div class="toast">Review submitted. Weight ${w.toFixed(1)}×. Rank moved from #${r.prev} to #${r.now}.</div><h1>${T[tp].name}</h1>
+  <div class="formula">learning score = Σ(rating × weight) / Σ(weight)</div>${filtersHTML()}${rowsHTML(cur.id,r.prev)}`;
+}
+function applyReview(id,st,w){
+  const v=videos.find(x=>x.id===id),rk=()=>ranked().filter(x=>x.lvl===v.lvl&&x.topic===v.topic).findIndex(x=>x.id===id)+1,prev=rk();
+  v.rev.n++;v.rev.sumW+=w;v.rev.sumRW+=w*st;return{prev,now:rk()};
+}
+function setOffline(b){
+  offline=b;shell();
+  if(!b&&store.queue.length){const n=store.queue.length;store.queue.forEach(q=>applyReview(q.vid,q.stars,q.w));store.queue=[];render();app.insertAdjacentHTML('afterbegin',`<div class="toast">Back online. ${n} saved review${n>1?'s':''} synced.</div>`)}
+  else render();
+}
+
+/* ---------- DOWNLOADS, NOTES, AI HELP ---------- */
+const aud=v=>Math.max(2,Math.round(v.videoMB*0.1));
+const LABEL={video:'Video',audio:'Audio only',pack:'Offline pack (notes, audio, summary, quiz)'};
+const hasItem=(id,t,q='')=>store.items.some(x=>x.vid===id&&x.type===t&&(x.q||'')===q);
+function download(id,t){
+  const v=videos.find(x=>x.id===id),el=$('#dlstat'),q=t==='video'?dq:t==='audio'?aq:'',mb=t==='video'?vmb(v,dq):t==='audio'?amb(v,aq):v.notesMB;
+  if(offline){el.innerHTML='<div class="toast">You are offline. Connect to the internet to download.</div>';return}
+  if(hasItem(id,t,q)){el.innerHTML='<div class="toast">Already saved on this device.</div>';return}
+  let pc=0;
+  const iv=setInterval(()=>{
+    pc+=10+Math.random()*15;const e=$('#dlstat');
+    if(pc>=100){clearInterval(iv);store.items.push({vid:id,type:t,mb,q});persist();userChip();if(e)e.innerHTML=`<div class="toast">${LABEL[t]} saved (${mb} MB). Find it in Downloads.</div>`}
+    else if(e)e.innerHTML=`<div class="note">Downloading ${LABEL[t]}… ${Math.round(pc)}% of ${mb} MB</div><div class="bar"><div class="b2" style="width:${pc}%"></div></div>`;
+  },300);
+}
+function dlView(){
+  const its=store.items,tot=its.reduce((a,x)=>a+x.mb,0);
+  app.innerHTML=`<h1>Downloads</h1><p class="note">${its.length} item${its.length===1?'':'s'} · ${tot.toFixed(1)} MB on this device</p>`+(its.length?its.map((x,i)=>{const v=videos.find(y=>y.id===x.vid);return `<div class="row" style="cursor:default"><div class="th" style="${bg(v)}"></div><div class="in"><b>${v.title}</b><span>${LABEL[x.type]}${x.q?' · '+x.q:''} · ${x.mb} MB · saved on device</span></div><button class="pri" onclick="${x.type==='pack'?`openLesson(${v.id})`:`openItem(${i})`}">Open</button><button onclick="rmItem(${i})">Remove</button></div>`}).join(''):'<p>Nothing saved yet. Open a lesson and choose Save for offline, or download from a video page.</p>');
+}
+function rmItem(i){store.items.splice(i,1);persist();userChip();dlView()}
+function openLesson(id){
+  if(offline&&!hasItem(id,'pack')){alert('This lesson is not saved for offline. Save it while you are online.');return}
+  slide=0;prog=0;go('st','learn',id);
+}
+const SUM_bayes={
+ boards:['Bayes theorem updates a probability after you see new evidence.','Formula: P(A|B) = P(B|A) × P(A) / P(B).','P(A) is the prior, your belief before. P(A|B) is the posterior, your belief after.','In board questions, write what A and B are first, then put numbers in the formula step by step.'],
+ jee:['Same formula, but P(B) comes from total probability: P(B) = Σ P(B|Ai) P(Ai).','Typical problems have 2 or 3 bags, machines or tests. Draw a tree diagram.','Posteriors over all causes add up to 1. Use that to check your answer.','Common mistake: mixing up P(A|B) and P(B|A).'],
+ olympiad:['Odds form: posterior odds = prior odds × likelihood ratio.','Base rate trap: a very accurate test for a rare event still gives a low posterior.','Check independence before multiplying probabilities.','Sequential updating: today\'s posterior is tomorrow\'s prior.']
+};
+const SIMPLE_bayes='Think of a smoke alarm. It rings when there is smoke, but it also rings for burnt toast. If it rings, how likely is there really a fire? Start with how common fires are (the prior). The ring is the new evidence. Bayes theorem mixes both to give a fair answer (the posterior). If fires are rare, a ring is often just toast.';
+const QA_bayes=[
+ [/prior|posterior/,'The prior is your belief before the evidence, P(A). The posterior is the updated belief after it, P(A|B).'],
+ [/formula|equation|derive|come from/,'It comes from writing P(A and B) two ways: P(A|B)·P(B) = P(B|A)·P(A). Divide both sides by P(B).'],
+ [/p\(b\)|denominator|total/,'P(B) is the total chance of seeing the evidence from every cause: P(B) = P(B|A)·P(A) + P(B|not A)·P(not A).'],
+ [/example|test|disease|alarm/,'1 in 100 people have a disease. The test finds 90% of sick people and wrongly flags 10% of healthy ones. Out of 1000 people, 9 sick and 99 healthy test positive. So a positive result means about 9 in 108, around 8%, not 90%.'],
+ [/why|use|where|real/,'Medical tests, spam filters and machine learning all use it to update a belief when new data arrives.'],
+ [/mistake|confus|difference/,'Do not mix up P(A|B) with P(B|A). "Most people with the disease test positive" is not the same as "most people who test positive have the disease".']
+];
+function aiOpen(){
+  $('#ai').innerHTML=`<div class="meter" style="margin-top:14px"><h3>Summary · ${LV[cur.lvl]}</h3><ul>${(nl==='hi'?T[tp].hi.SUM:SUM)[cur.lvl].map(x=>`<li>${x}</li>`).join('')}</ul>
+  <div class="ctrl"><button onclick="aiSimple()">I still don't get it</button><button onclick="startQuiz()">Test myself</button></div><div id="aiS"></div>
+  <h3 style="margin-top:14px">Ask a doubt</h3><div class="search" style="max-width:none"><input id="dq" placeholder="e.g. what is prior?"><button onclick="aiAsk()">Ask</button></div><div id="aiA" style="margin-top:8px"></div>
+  <p class="note">Demo helper. It answers from the saved notes and works offline. The full product would use an AI tutor.</p></div>`;
+}
+function aiSimple(){$('#aiS').innerHTML=`<div class="q" style="margin-top:10px"><b>Simple version</b><p>${nl==='hi'?T[tp].hi.SIMPLE:SIMPLE}</p></div>`}
+function aiAsk(){const t=$('#dq').value.toLowerCase(),m=QA.find(x=>x[0].test(t));$('#aiA').textContent=m?m[1]:'I could not match that doubt in the saved notes. Try words like formula, example, why or mistake.'}
+function dlNotes(){
+  const txt=cur.title+'\n'+cur.teacher+' · '+LV[cur.lvl]+'\n\n'+sl(nl).map((x,i)=>(i+1)+'. '+x.h+'\n'+x.p+(x.f?'\n'+x.f:'')).join('\n\n')+'\n\nSummary\n'+(nl==='hi'?T[tp].hi.SUM:SUM)[cur.lvl].map(x=>'- '+x).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/plain'}));a.download=cur.topic+'-notes-'+cur.lvl+'-'+nl+'.txt';a.click();
+}
+
+const T={
+bayes:{name:'Bayes theorem',ic:'🎲',sub:'Maths · Probability',d:{slides:SL_bayes,quiz:QZ_bayes,SUM:SUM_bayes,SIMPLE:SIMPLE_bayes,QA:QA_bayes}},
+newton:{name:"Newton's laws",ic:'🍎',sub:'Physics · Mechanics',d:{
+ slides:[{h:'Why things move',p:'Newton explained motion with three simple laws. Learn them once and half of mechanics opens up.'},
+ {h:'First law: inertia',p:'An object keeps doing what it is doing, resting or moving straight at constant speed, unless a net force acts on it.'},
+ {h:'Second law',p:'Net force equals mass times acceleration. The same push on a heavier object gives less acceleration.',f:'F = m · a'},
+ {h:'Third law',p:'When A pushes B, B pushes A back equally and oppositely. The two forces act on different objects.'},
+ {h:'Quick example',p:'A 2 kg trolley is pushed with 10 N and friction is 4 N. Net force is 6 N, so a = 6 / 2 = 3 m/s².'}],
+ quiz:[{q:'The SI unit of force is…',o:['Joule','Newton','Watt'],a:1},{q:'Net force 12 N on a 3 kg body gives a =',o:['4 m/s²','36 m/s²','0.25 m/s²'],a:0},{q:'Action and reaction forces act on…',o:['The same object','Different objects','No object'],a:1}],
+ SUM:{boards:['Inertia: no net force means no change in motion.','F = ma links force, mass and acceleration.','Action and reaction are equal, opposite and on different bodies.'],jee:['Draw a free body diagram for every block, then write F = ma along each axis.','In pulley problems the string constraint gives extra equations.','Friction is at most μN. Check whether the block really slides.'],olympiad:['Use F = dp/dt when mass changes.','In non-inertial frames add a pseudo force of −ma.','Check limiting cases and units before finalising.']},
+ SIMPLE:'Think of a bus that brakes suddenly. You lurch forward because your body wants to keep moving (first law). A heavy bag needs a bigger push to stop (second law). You press the seat and it presses back (third law).',
+ QA:[[/inertia|first/,'Inertia is the tendency of a body to keep its state of rest or straight-line motion unless a net force acts.'],[/second|formula|f=ma|equation/,'F = ma. Acceleration is the net force divided by mass.'],[/third|reaction|action/,'Forces come in pairs on two different bodies, so they never cancel each other.'],[/example|friction|why|real/,'Rockets, seat belts and walking all use these laws. Walking works because the ground pushes you forward as you push it back.'],[/mistake|confus|difference/,'Do not add action and reaction in one free body diagram. They act on different objects.']]}},
+photo:{name:'Photosynthesis',ic:'🌱',sub:'Biology · Plant physiology',d:{
+ slides:[{h:'Plants make food',p:'Plants cannot eat, so they build their own food from light. This is photosynthesis.'},
+ {h:'Raw materials',p:'Water from the soil, carbon dioxide from the air and light energy from the sun, caught by chlorophyll.'},
+ {h:'The equation',p:'Carbon dioxide and water, with light, make glucose and oxygen.',f:'6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂'},
+ {h:'Two stages',p:'Light reactions in the thylakoids make ATP and NADPH. The Calvin cycle in the stroma uses them to turn CO₂ into sugar.'},
+ {h:'Quick example',p:'A plant in a dark room soon stops making sugar, because without light there is no ATP and NADPH for the Calvin cycle.'}],
+ quiz:[{q:'Photosynthesis happens in the…',o:['Mitochondria','Chloroplast','Nucleus'],a:1},{q:'The gas released is…',o:['Oxygen','Carbon dioxide','Nitrogen'],a:0},{q:'The Calvin cycle takes place in the…',o:['Thylakoid','Stroma','Cytoplasm'],a:1}],
+ SUM:{boards:['Chlorophyll absorbs mostly red and blue light.','CO₂ + water → glucose + oxygen.','Stomata let gases enter and leave the leaf.'],jee:['Light reactions: water splits, O₂ is released, ATP and NADPH are made.','Calvin cycle: RuBisCO fixes CO₂ into 3-PGA, which is reduced to sugar.','C3, C4 and CAM plants differ in how they first fix CO₂.'],olympiad:['Z-scheme: electrons flow from PSII to PSI through carriers.','Photorespiration: RuBisCO also binds O₂ and wastes energy. C4 plants avoid it.','At the light compensation point, photosynthesis equals respiration.']},
+ SIMPLE:'A leaf is a tiny solar kitchen. Sunlight is the electricity, water and air are the ingredients, and sugar is the meal. Oxygen is the leftover that we breathe.',
+ QA:[[/chlorophyll|green|pigment/,'Chlorophyll absorbs red and blue light and reflects green, which is why leaves look green.'],[/equation|formula/,'6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂.'],[/calvin|dark|stroma/,'The Calvin cycle uses ATP and NADPH from the light reactions to fix CO₂ into sugar, in the stroma.'],[/why|use|where|real/,'It is the base of almost every food chain and the source of the oxygen in air.'],[/mistake|confus|difference/,'Oxygen comes from splitting water, not from CO₂.']]}},
+deriv:{name:'Derivatives',ic:'📈',sub:'Maths · Calculus',d:{
+ slides:[{h:'Rate of change',p:'How fast is something changing right now? The speedometer in a car shows a derivative.'},
+ {h:'Definition',p:'The derivative is the limit of the change in y over the change in x, as the change in x shrinks to zero.',f:'f′(x) = lim (f(x+h) − f(x)) / h'},
+ {h:'Power rule',p:'Bring the power down in front and reduce the power by one.',f:'d/dx xⁿ = n · xⁿ⁻¹'},
+ {h:'What it means',p:'The derivative is the slope of the tangent line. Positive means rising, negative means falling, zero means a flat turning point.'},
+ {h:'Quick example',p:'For f(x) = x³, f′(x) = 3x². At x = 2 the slope is 12.'}],
+ quiz:[{q:'d/dx of x⁴ is…',o:['4x³','x³','4x⁴'],a:0},{q:'The derivative gives the…',o:['Area under the curve','Slope of the tangent','Average of values'],a:1},{q:'The derivative of a constant is…',o:['1','The constant','0'],a:2}],
+ SUM:{boards:['Derivative = rate of change = slope of the tangent.','Power rule: d/dx xⁿ = n xⁿ⁻¹.','Set f′(x) = 0 to find maximum and minimum points.'],jee:['Know the product, quotient and chain rules by heart.','Classify maxima and minima by the sign change of f′.','Use implicit differentiation for curves like x² + y² = 25.'],olympiad:['Mean value theorem: some point has slope equal to the average slope.','Prove inequalities by studying where a function increases or decreases.','Check differentiability at corners, not just continuity.']},
+ SIMPLE:'A car trip tells you how far you went. The speedometer tells you how fast the distance is changing at this very second. That instant rate of change is the derivative.',
+ QA:[[/rule|power/,'Power rule: d/dx xⁿ = n·xⁿ⁻¹. For x⁵ the derivative is 5x⁴.'],[/slope|tangent|meaning/,'f′(x) is the slope of the tangent to the curve at x.'],[/max|min|turning/,'At a maximum or minimum the slope is zero, so solve f′(x) = 0 and then check the sign change.'],[/example|real|why|use/,'Speed from distance, profit optimisation and the shape of graphs all use derivatives.'],[/mistake|confus|difference/,'The derivative of a product is not the product of derivatives. Use the product rule.']]}}
+};
+let slides,quiz,SUM,SIMPLE,QA;
+function useTopic(){({slides,quiz,SUM,SIMPLE,QA}=T[tp].d)}
+
+const sl=l=>l==='hi'?T[tp].hi.slides.map((x,i)=>({...slides[i],...x})):slides;
+function setLg(k,c){if(k==='n')nl=c;else al=c;try{localStorage.setItem('ysl',nl+al)}catch(e){}paint();if(k==='a'&&playing)speak();if(k==='n'&&$('#ai').innerHTML)aiOpen()}
+const esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function cmPaint(){const el=$('#cm');if(!el)return;
+ if(!user){el.innerHTML='<div class="meter" style="margin-top:14px"><b>🔒 Reviews and comments are for verified students.</b><br><button class="pri" style="margin-top:8px" onclick="askLogin()">Student login</button></div>';return}
+ const l=cmts[cur.id]||[];
+ el.innerHTML=`<div class="meter" style="margin-top:14px"><h3>Comments (${l.length})</h3><div class="search" style="max-width:none"><input id="ct" placeholder="Add a comment as ${user.name}"><button onclick="cmPost()">Post</button></div>${l.map(c=>`<div class="q" style="margin:8px 0 0"><b>${esc(c.n)}</b><div>${esc(c.t)}</div></div>`).join('')}</div>`}
+function cmPost(){const t=$('#ct').value.trim();if(!t)return;(cmts[cur.id]=cmts[cur.id]||[]).unshift({n:user.name,t});try{localStorage.setItem('ysc',JSON.stringify(cmts))}catch(e){}cmPaint()}
+function profView(){const rv=[...reviewed].filter(k=>k.startsWith(user.id+':')).length,mc=Object.values(cmts).flat().filter(c=>c.n===user.name).length,LN=c=>c==='hi'?'हिन्दी':'English';
+ app.innerHTML=`<h1>${user.name}</h1><span class="badge ok">Verified</span><span class="note">${user.id}</span><div class="meter" style="margin-top:12px"><p>Class: <b>${user.cls}</b></p><p>Target level: <b>${LV[user.goal]}</b></p><p>Reviews: <b>${rv}</b> · Comments: <b>${mc}</b></p><p>Best quiz scores: ${Object.keys(hs).map(k=>T[k].name+' '+hs[k]+'/3').join(', ')||'none yet'}</p><p>Saved offline: <b>${store.items.length}</b> items</p><p>Notes language: <b>${LN(nl)}</b> · Audio language: <b>${LN(al)}</b></p></div>`}
+const HS=a=>a.map(([h,p])=>({h,p}));
+T.bayes.hi={slides:HS([['रात 11 बजे की समस्या','कल परीक्षा है और आपको पक्का नहीं पता कि बेज़ प्रमेय किसलिए है। पाँच छोटी स्लाइडों में इसे समझते हैं।'],['यह क्या बताता है','नया सबूत मिलने पर, पहले की मान्यता को कैसे बदलें?'],['सूत्र','B दिया होने पर A की प्रायिकता = A दिया होने पर B की प्रायिकता × A की प्रायिकता ÷ B की प्रायिकता।'],['प्रायर और पोस्टीरियर','P(A) प्रायर है, यानी पहले की मान्यता। P(A|B) पोस्टीरियर है, यानी B देखने के बाद की मान्यता।'],['छोटा उदाहरण','एक जाँच 90 प्रतिशत बीमार लोगों को पकड़ती है, पर केवल 1 प्रतिशत लोग बीमार हैं। पॉज़िटिव रिज़ल्ट फिर भी पक्का नहीं है। बेज़ प्रमेय बताता है कि कितना संभव है।']]),
+SUM:{boards:['बेज़ प्रमेय नया सबूत देखकर प्रायिकता को अपडेट करता है।','सूत्र: P(A|B) = P(B|A) × P(A) / P(B)।','P(A) प्रायर है, P(A|B) पोस्टीरियर है।','पहले A और B लिखें, फिर संख्याएँ सूत्र में चरण-दर-चरण रखें।'],jee:['P(B) कुल प्रायिकता से आता है: P(B) = Σ P(B|Ai) P(Ai)।','2 या 3 थैले, मशीन या जाँच वाले सवाल आम हैं। ट्री डायग्राम बनाएँ।','सभी कारणों के पोस्टीरियर का योग 1 होता है। इससे उत्तर जाँचें।','आम गलती: P(A|B) और P(B|A) को आपस में मिला देना।'],olympiad:['ऑड्स रूप: पोस्टीरियर ऑड्स = प्रायर ऑड्स × लाइकलीहुड अनुपात।','बेस रेट का जाल: दुर्लभ घटना के लिए सटीक जाँच भी कम पोस्टीरियर देती है।','प्रायिकताएँ गुणा करने से पहले स्वतंत्रता जाँचें।','क्रमिक अपडेट: आज का पोस्टीरियर कल का प्रायर बनता है।']},
+SIMPLE:'स्मोक अलार्म सोचिए। धुएँ पर बजता है, पर जले टोस्ट पर भी बजता है। तो बजने पर आग लगी होने की कितनी संभावना है? पहले देखिए आग कितनी आम है (प्रायर)। अलार्म का बजना नया सबूत है। बेज़ प्रमेय दोनों को मिलाकर सही जवाब देता है (पोस्टीरियर)। आग दुर्लभ हो तो अलार्म अक्सर बस टोस्ट होता है।'};
+T.newton.hi={slides:HS([['चीज़ें क्यों चलती हैं','न्यूटन ने गति को तीन सरल नियमों से समझाया। इन्हें एक बार सीख लें तो यांत्रिकी का आधा हिस्सा आसान हो जाता है।'],['पहला नियम: जड़त्व','कोई वस्तु जैसी है वैसी ही रहती है, विरामावस्था में या सीधी रेखा में स्थिर चाल से, जब तक उस पर नेट बल न लगे।'],['दूसरा नियम','नेट बल = द्रव्यमान × त्वरण। समान धक्का भारी वस्तु में कम त्वरण देता है।'],['तीसरा नियम','जब A, B को धकेलता है तो B भी A को बराबर और विपरीत बल से धकेलता है। ये दोनों बल अलग-अलग वस्तुओं पर लगते हैं।'],['छोटा उदाहरण','2 kg की ट्रॉली को 10 N से धकेला गया और घर्षण 4 N है। नेट बल 6 N है, इसलिए a = 6 / 2 = 3 m/s²।']]),
+SUM:{boards:['जड़त्व: नेट बल शून्य हो तो गति नहीं बदलती।','F = ma बल, द्रव्यमान और त्वरण को जोड़ता है।','क्रिया और प्रतिक्रिया बराबर, विपरीत और अलग वस्तुओं पर होती हैं।'],jee:['हर ब्लॉक का फ्री बॉडी डायग्राम बनाएँ, फिर हर अक्ष पर F = ma लिखें।','पुली के सवालों में रस्सी की शर्त अतिरिक्त समीकरण देती है।','घर्षण अधिकतम μN होता है। जाँचें कि ब्लॉक सच में फिसलता है या नहीं।'],olympiad:['द्रव्यमान बदलने पर F = dp/dt का उपयोग करें।','अजड़त्वीय फ्रेम में छद्म बल −ma जोड़ें।','अंतिम उत्तर से पहले सीमांत स्थितियाँ और मात्रक जाँचें।']},
+SIMPLE:'बस अचानक रुकती है तो आप आगे झुक जाते हैं, क्योंकि आपका शरीर गति में बने रहना चाहता है (पहला नियम)। भारी बैग को रोकने के लिए ज़्यादा बल चाहिए (दूसरा नियम)। आप सीट को दबाते हैं और सीट आपको दबाती है (तीसरा नियम)।'};
+T.photo.hi={slides:HS([['पौधे भोजन बनाते हैं','पौधे खा नहीं सकते, इसलिए प्रकाश से अपना भोजन खुद बनाते हैं। इसे प्रकाश संश्लेषण कहते हैं।'],['कच्चा माल','मिट्टी से पानी, हवा से कार्बन डाइऑक्साइड और सूरज से प्रकाश ऊर्जा, जिसे क्लोरोफिल पकड़ता है।'],['समीकरण','कार्बन डाइऑक्साइड और पानी, प्रकाश के साथ, ग्लूकोज़ और ऑक्सीजन बनाते हैं।'],['दो चरण','थाइलेकॉइड में प्रकाश अभिक्रियाएँ ATP और NADPH बनाती हैं। स्ट्रोमा में केल्विन चक्र इनसे CO₂ को शर्करा में बदलता है।'],['छोटा उदाहरण','अँधेरे कमरे में रखा पौधा जल्दी शर्करा बनाना बंद कर देता है, क्योंकि प्रकाश के बिना केल्विन चक्र के लिए ATP और NADPH नहीं बनते।']]),
+SUM:{boards:['क्लोरोफिल मुख्यतः लाल और नीला प्रकाश सोखता है।','CO₂ + पानी → ग्लूकोज़ + ऑक्सीजन।','रंध्र पत्ती में गैसों का आना-जाना कराते हैं।'],jee:['प्रकाश अभिक्रिया: पानी टूटता है, O₂ निकलती है, ATP और NADPH बनते हैं।','केल्विन चक्र: RuBisCO CO₂ को 3-PGA में बाँधता है, जो आगे शर्करा बनता है।','C3, C4 और CAM पौधे CO₂ को पहले बाँधने के तरीके में अलग हैं।'],olympiad:['Z-स्कीम: इलेक्ट्रॉन PSII से PSI तक वाहकों के ज़रिए जाते हैं।','प्रकाश श्वसन: RuBisCO O₂ से भी जुड़ता है और ऊर्जा बर्बाद करता है। C4 पौधे इससे बचते हैं।','प्रकाश क्षतिपूर्ति बिंदु पर प्रकाश संश्लेषण और श्वसन बराबर होते हैं।']},
+SIMPLE:'पत्ती एक छोटी सौर रसोई है। धूप बिजली है, पानी और हवा सामग्री हैं, और शर्करा भोजन है। ऑक्सीजन बचा हुआ हिस्सा है जिसमें हम साँस लेते हैं।'};
+T.deriv.hi={slides:HS([['परिवर्तन की दर','अभी कोई चीज़ कितनी तेज़ी से बदल रही है? कार का स्पीडोमीटर एक अवकलज दिखाता है।'],['परिभाषा','अवकलज, y में बदलाव और x में बदलाव के अनुपात की सीमा है, जब x का बदलाव शून्य की ओर जाता है।'],['घात नियम','घात को आगे लाइए और घात में एक घटाइए।'],['इसका अर्थ','अवकलज स्पर्श रेखा की ढाल है। धनात्मक का मतलब बढ़ना, ऋणात्मक का मतलब घटना, शून्य का मतलब समतल मोड़ बिंदु।'],['छोटा उदाहरण','f(x) = x³ के लिए f′(x) = 3x²। x = 2 पर ढाल 12 है।']]),
+SUM:{boards:['अवकलज = परिवर्तन की दर = स्पर्श रेखा की ढाल।','घात नियम: d/dx xⁿ = n xⁿ⁻¹।','अधिकतम और न्यूनतम बिंदु पाने के लिए f′(x) = 0 रखें।'],jee:['गुणनफल, भागफल और शृंखला नियम याद रखें।','f′ के चिह्न बदलने से अधिकतम और न्यूनतम पहचानें।','x² + y² = 25 जैसे वक्रों के लिए अव्यक्त अवकलन करें।'],olympiad:['माध्यमान प्रमेय: कोई बिंदु ऐसा होता है जहाँ ढाल औसत ढाल के बराबर हो।','फलन कहाँ बढ़ता या घटता है, यह देखकर असमिकाएँ सिद्ध करें।','केवल सांतत्य नहीं, कोनों पर अवकलनीयता भी जाँचें।']},
+SIMPLE:'कार की यात्रा बताती है कि आप कितनी दूर गए। स्पीडोमीटर बताता है कि इसी क्षण दूरी कितनी तेज़ी से बदल रही है। यही तात्कालिक परिवर्तन दर अवकलज है।'};
+
+const GR={bayes:['#7b2cbf','#3a0ca3'],newton:['#f77f00','#c1121f'],photo:['#1b4332','#40916c'],deriv:['#0077b6','#023e8a']};
+const bg=v=>v.img?`background:url('${v.img}') center/cover`:`background:url('data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><text x="60" y="95" font-size="90" text-anchor="middle" opacity=".35">'+T[v.topic].ic+'</text></svg>')}') right -10px bottom -10px/90px no-repeat,linear-gradient(135deg,${GR[v.topic][0]},${GR[v.topic][1]})`;
+const F={'144p':.15,'360p':.35,'480p':.55,'720p':1,'1080p':1.9},AF={'Low':.6,'Standard':1,'High':1.6};
+const vmb=(v,q)=>+(v.videoMB*F[q]).toFixed(1),amb=(v,q)=>+(aud(v)*AF[q]).toFixed(1);
+const sel=(k,o,v)=>`<select onchange="setQ('${k}',this.value)">${o.map(x=>`<option ${x===v?'selected':''}>${x}</option>`).join('')}</select>`;
+function setQ(k,v){if(k==='vq')vq=v;else if(k==='dq')dq=v;else aq=v;ytWatch()}
+const tf=t=>Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');
+function openItem(i){stop();pl={i,t:0,run:false,spd:1};go(mode,'play')}
+function plDur(){const v=videos.find(y=>y.id===store.items[pl.i].vid);return v.videoMB>100?2292:624}
+function plCtl(a,x){const d=plDur();
+ if(a==='pp'){pl.run=!pl.run;clearInterval(pl.iv);if(pl.run)pl.iv=setInterval(()=>{pl.t=Math.min(d,pl.t+pl.spd);if(pl.t>=d)plCtl('stop');else plPaint()},1000)}
+ else if(a==='stop'){pl.run=false;clearInterval(pl.iv);pl.t=0}
+ else if(a==='skip')pl.t=Math.max(0,Math.min(d,pl.t+x));
+ else if(a==='seek')pl.t=+x;
+ else if(a==='spd')pl.spd=x;
+ plPaint()}
+function plPaint(){const sk=$('#sk');if(!sk)return;const d=plDur();sk.max=d;sk.value=pl.t;$('#tm').textContent=tf(pl.t)+' / '+tf(d);$('#ppb').textContent=pl.run?'⏸ Pause':'▶ Play';$('#pst').textContent=pl.run?'▶ Playing':'⏸ Paused';document.querySelectorAll('[data-r]').forEach(b=>b.classList.toggle('on',+b.dataset.r===pl.spd))}
+function playView(){const x=store.items[pl.i];if(!x)return dlView();const v=videos.find(y=>y.id===x.vid);
+ app.innerHTML=`<h2>${v.title}</h2><span class="note">${v.teacher} · ${LABEL[x.type]}${x.q?' · '+x.q:''} · playing from this device, no data used</span>
+ <div class="watch" style="${bg(v)};margin-top:12px"><div id="pst" style="font-size:36px;font-weight:700"></div></div>
+ <input type="range" id="sk" min="0" value="0" style="width:100%;margin-top:10px" aria-label="Seek" oninput="plCtl('seek',this.value)"><div class="note" id="tm"></div>
+ <div class="ctrl" style="margin:10px 0"><button onclick="plCtl('skip',-10)">⏪ 10s</button><button class="pri" id="ppb" onclick="plCtl('pp')"></button><button onclick="plCtl('skip',10)">10s ⏩</button><button onclick="plCtl('stop')">⏹ Stop</button></div>
+ <div class="ctrl"><span class="note">Speed</span>${[.75,1,1.25,1.5,2].map(r=>`<button class="chip" data-r="${r}" onclick="plCtl('spd',${r})">${r}×</button>`).join('')}</div>`;plPaint()}
+
+/* ---------- ROUTER ---------- */
+function render(){
+  if(view==='play')return playView();if(view==='profile'&&user)return profView();if(view==='downloads')return dlView();
+  if(mode==='yt') view==='watch'?ytWatch():ytHome();
+  else view==='learn'?stLearn():view==='list'?stList():stHome();
+}
+shell();render();
+</script>
+</body>
+</html>
